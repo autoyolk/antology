@@ -10,6 +10,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .insert_resource(ClearColor(COLOR_BG))
         .add_systems(Startup, setup)
+        .add_systems(Update, bevy::window::close_on_esc)
         .run();
 }
 
