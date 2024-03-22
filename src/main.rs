@@ -35,34 +35,15 @@ fn setup(
 
     // Spawn the Queen
 
-    commands.spawn((
-        AntQueen,
-        MaterialMesh2dBundle {
-            mesh: meshes.add(Circle::default()).into(),
-            material: materials.add(COLOR_ANT_QUEEN),
-            transform: Transform::from_translation(Vec3::splat(0.0))
-                .with_scale(Vec3::splat(SIZE_ANT_QUEEN)),
-            ..Default::default()
-        },
-    ));
+    commands.spawn(AntQueenBundle::new(&mut meshes, &mut materials));
 
     // Spawn the Workers
 
     for n in 0..NUM_ANT_WORKERS {
         let angle = Vec2::from_angle(n as f32 * (PI * 2.0 / NUM_ANT_WORKERS as f32));
         let position = angle * SIZE_ANT_QUEEN * 3.0;
-        let position = position.extend(0.0);
 
-        commands.spawn((
-            AntWorker,
-            MaterialMesh2dBundle {
-                mesh: meshes.add(Circle::default()).into(),
-                material: materials.add(COLOR_ANT_WORKER),
-                transform: Transform::from_translation(position)
-                    .with_scale(Vec3::splat(SIZE_ANT_WORKER)),
-                ..Default::default()
-            },
-        ));
+        commands.spawn(AntWorkerBundle::new(position, &mut meshes, &mut materials));
     }
 }
 
@@ -145,8 +126,57 @@ fn update_ants(
 #[derive(Component)]
 struct AntQueen;
 
+#[derive(Bundle)]
+struct AntQueenBundle {
+    ant: AntQueen,
+    mesh: MaterialMesh2dBundle<ColorMaterial>,
+}
+
+impl AntQueenBundle {
+    fn new(
+        meshes: &mut ResMut<Assets<Mesh>>,
+        materials: &mut ResMut<Assets<ColorMaterial>>,
+    ) -> Self {
+        return Self {
+            ant: AntQueen,
+            mesh: MaterialMesh2dBundle {
+                mesh: meshes.add(Circle::default()).into(),
+                material: materials.add(COLOR_ANT_QUEEN),
+                transform: Transform::from_translation(Vec3::splat(0.0))
+                    .with_scale(Vec3::splat(SIZE_ANT_QUEEN)),
+                ..Default::default()
+            },
+        };
+    }
+}
+
 #[derive(Component)]
 struct AntWorker;
+
+#[derive(Bundle)]
+struct AntWorkerBundle {
+    ant: AntWorker,
+    mesh: MaterialMesh2dBundle<ColorMaterial>,
+}
+
+impl AntWorkerBundle {
+    fn new(
+        position: Vec2,
+        meshes: &mut ResMut<Assets<Mesh>>,
+        materials: &mut ResMut<Assets<ColorMaterial>>,
+    ) -> Self {
+        return Self {
+            ant: AntWorker,
+            mesh: MaterialMesh2dBundle {
+                mesh: meshes.add(Circle::default()).into(),
+                material: materials.add(COLOR_ANT_WORKER),
+                transform: Transform::from_translation(position.extend(0.0))
+                    .with_scale(Vec3::splat(SIZE_ANT_WORKER)),
+                ..Default::default()
+            },
+        };
+    }
+}
 
 #[derive(Component)]
 struct Destination(Vec2);
