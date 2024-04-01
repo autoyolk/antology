@@ -11,7 +11,7 @@ fn main() {
     env_logger::init();
 
     match try_main() {
-        Ok(()) => log::info!("Exiting gracefully"),
+        Ok(_) => (),
         Err(e) => log::error!("Error occured: {}", e),
     };
 }
