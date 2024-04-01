@@ -1,12 +1,17 @@
-use std::error::Error;
-
+use anyhow::Result;
 use winit::{
-    event::*, event_loop::EventLoop, keyboard::{Key, NamedKey}, window::WindowBuilder
+    event::*, event_loop::EventLoop, keyboard::{Key, NamedKey}, window::{Window, WindowBuilder}
 };
 
-pub fn run() -> Result<(), Box<dyn Error>> {
+
+pub fn init() -> Result<(EventLoop<()>, Window),> {
     let event_loop = EventLoop::new()?;
     let window = WindowBuilder::new().build(&event_loop)?;
+
+    Ok((event_loop, window))
+}
+
+pub async fn run(event_loop: EventLoop<()>, window: Window) -> Result<()> {
 
     event_loop.run(move |event, target| match event {
         Event::WindowEvent {
